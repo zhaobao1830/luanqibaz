@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		html,body{
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			font-family: Arial,"Microsoft Yahei";
+			background-color: #b1b1b1;
+			overflow: hidden;
+			-webkit-user-select:none; 
+			-moz-user-select:none; 
+			-ms-user-select:none; 
+			user-select:none;
+		}
+		ul,li{
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.container{
+			width: 540px;
+			height: 400px;
+			padding: 50px 20px;
+			background-color: #fff;
+			border-radius: 2px;
+			margin:auto;
+			margin-top: 10%;
+		}
+		.container .data-list{
+			width: 40%;
+			height: 100%;
+			background-color: #fafafa;
+    		border: 1px solid #e5e5e5;
+			float: left;
+		}
+		.container .data-list li{
+			width: 100%;
+		    height: 36px;
+		    line-height: 36px;
+		    text-indent: 10px;
+		    color: #666;
+		    font-size: 14px;
+		    cursor: pointer;
+		}
+		.container .data-list li.moving{
+			position: absolute;
+			width: auto;
+			padding-right: 15px;
+			top: 0;
+			left: 0;
+		}
+		.container .data-list li.selected{
+			background-color: #666;
+			color: #fff;
+		}
+		.container .data-list li:hover{
+			background-color: #039ae3;
+			color: #fff;
+		}
+		.container .toolbar{
+			float: left;
+			width: 18%;
+			padding-top: 25%;
+		}
+		.container .toolbar .button{
+		    width: 80px;
+		    height: 36px;
+		    display: block;
+		    margin: 20px auto;
+		    border: 1px solid #d9d9d9;
+		    text-align: center;
+		    line-height: 36px;
+		    text-decoration: none;
+		    color: #333;
+		    background: #f3f3f3;
+		    font-size: 14px;
+		}
+		.container .toolbar .button:hover{
+			background-color: #039ae3;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<ul id="left-list" class="data-list list-left">
+			<li>刘备 15008444102</li>
+			<li>诸葛亮 15508444103</li>
+			<li>关羽 13608444104</li>
+			<li>张飞 18108444105</li>
+			<li>曹操 18208444106</li>
+			<li>孙权 15708444107</li>
+		</ul>
+		<div class="toolbar">
+			<a id="add" class="button" href="#">添加</a>
+			<a id="del" class="button" href="#">删除</a>
+		</div>
+		<ul id="right-list" class="data-list list-left">
+		</ul>
+	</div>
+	<script>
+		window.onload = function(){
+			var leftList = document.getElementById("left-list");
+			var rightList = document.getElementById("right-list");
+			var movingItem;
+			var itemClick = function(event){
+				event.target.className = event.target.className?"":"selected";
+			};
+			leftList.onmouseup = rightList.onmouseup = function(event){
+				if(event.target.tagName==="UL"&&movingItem){
+					event.target.appendChild(movingItem);
+					movingItem = null;
+				}
+			}
+			for(var i=0;i<leftList.children.length;i++){
+				leftList.children[i].onclick = itemClick;
+				leftList.children[i].ondblclick = function(event){
+					var target = event.target;
+					movingItem = target;
+					target.style.left = (event.clientX+10)+"px";
+					target.style.top =  (event.clientY+10)+"px";
+					target.className = "selected moving";
+					document.onmousemove = function(event){
+						target.style.left = (event.clientX+10)+"px";
+						target.style.top =  (event.clientY+10)+"px";
+					}
+					document.onmouseup = function(event){
+						target.className = "";
+						document.onmousemove = null;
+						movingItem = null;
+					}
+				}
+			}
+
+			document.getElementById("del").onclick = document.getElementById("add").onclick = function(event){
+				var arr = [];
+				var target = event.target.id==="add"?leftList:rightList;
+				var target2 = target===leftList?rightList:leftList;
+				for(var i=0;i<target.children.length;i++){
+					if(target.children[i].className){
+						arr.push(target.children[i]);
+					}
+				}
+				for (var i = 0; i < arr.length; i++) {
+					arr[i].className="";
+					target2.appendChild(arr[i]);
+				}
+			}
+		}
+	</script>
+</body>
+</html>

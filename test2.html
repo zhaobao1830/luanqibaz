@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+   <input type="file" id="uploadFile" onchange="readLocalFile()">
+   <div><img src="" id="img"></div>
+   <div><textarea id="fileContent" rows="30" cols="60"></textarea></div>
+<script>
+    function readLocalFile() {
+        var localFile=document.getElementById("uploadFile").files[0]
+        var reader=new FileReader()
+        var content
+        reader.onload=function (event) {
+            content = event.target.result;
+            //alert(content);
+            console.log(content)
+            document.getElementById("img").src = content;
+            document.getElementById("fileContent").value = content;
+        }
+        reader.onerror = function(event) {
+            alert('error')
+            //alert("File could not be read! Code " + event.target.error.code);
+        }
+        //reader.readAsText(localFile,"UTF-8");
+
+        content = reader.readAsText(localFile,"UTF-8");
+
+        //
+    }
+</script>
+</body>
+</html>

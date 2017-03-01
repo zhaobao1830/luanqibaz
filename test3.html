@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>拖拽</title>
+    <style>
+         html,body{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft Yahei",Arial;
+            background-color: #b1b1b1;
+        }
+        ul,li{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .container{
+            width: 540px;
+            height: 400px;
+            padding: 50px 20px;
+            background-color: #fff;
+            border-radius: 2px;
+            margin: 0 auto;
+            margin-top: 10%;
+        }
+        .container ul{
+            width: 40%;
+            height: 100%;
+            background-color: #fafafa;
+            border: 1px solid #e5e5e5;
+            float: left;
+        }
+         .container .data-list li{
+             width: 100%;
+             height: 36px;
+             line-height: 36px;
+             text-indent: 10px;
+             color: #666;
+             font-size: 14px;
+             cursor: pointer;
+         }
+         .container .data-list li:hover{
+             background-color: #039ae3;
+             color: #fff;
+         }
+         .container .data-list li.selected{
+             background-color: #666;
+             color: #fff;
+         }
+        .toolbar{
+            margin-top: 25%;
+            width: 18%;
+            float: left;
+        }
+        .toolbar .button{
+            width: 80px;
+            height: 36px;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #d9d9d9;
+            text-align: center;
+            line-height: 36px;
+            text-decoration: none;
+            color: #333;
+            background: #f3f3f3;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+       <ul id="left-list" class="data-list list-left">
+           <li>刘备</li>
+           <li>诸葛亮</li>
+           <li>关羽</li>
+           <li>张飞</li>
+       </ul>
+        <div class="toolbar">
+            <a id="add" class="button" href="#">添加</a>
+            <a id="del" class="button" href="#">删除</a>
+        </div>
+        <ul id="right-list" class="data-list list-right">
+        </ul>
+    </div>
+    <script>
+        window.onload = function () {
+            var leftList = document.getElementById("left-list");
+            var rightList = document.getElementById("right-list");
+            //这么做的理由是：如果卸载for里面，每次循环都会调用event,target，影响性能
+            var itemClick=function (event) {
+//                    if(event.target.className==="selected"){
+//                        event.target.className=""
+//                    }else{
+//                        event.target.className="selected"
+//                    }
+                //上下下个代码一样
+                event.target.className=event.target.className?"":"selected"
+            }
+            for(var i=0;i<leftList.children.length;i++){
+                leftList.children[i].onclick=itemClick;
+            }
+            document.getElementById("add").onclick=function () {
+                //使用arr的原因，
+//                for(var i=0;i<leftList.children.length;i++){
+//                    if(leftList.children[i].className){
+//                         这种会出现错误。选择多个的时候，有的无法移动，原因是便利的时候，移动一个后
+//                         length不一样了
+//                        rightList.appendChild(leftList.children[i])
+//                    }
+//                }
+                var arr = [];
+                for(var i=0;i<leftList.children.length;i++){
+                    if(leftList.children[i].className){
+                        rightList.appendChild(leftList.children[i])
+                        arr.push(leftList.children[i]);
+                    }
+                }
+                for(var i=0;i<arr.length;i++){
+                    rightList.appendChild(arr[i])
+                }
+            }
+            document.getElementById("del").onclick =function () {
+                var arr = [];
+                for(var i=0;i<rightList.children.length;i++){
+                    if(rightList.children[i].className){
+                        arr.push(rightList.children[i]);
+                    }
+                }
+                for(var i=0;i<arr.length;i++){
+                    leftList.appendChild(arr[i])
+                }
+            }
+
+        }
+    </script>
+</body>
+</html>
