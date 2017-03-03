@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>俩列移动</title>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft Yahei",Arial;
+            background-color: #b1b1b1;
+            -webkit-user-select:none;
+            -moz-user-select:none;
+            -ms-user-select:none;
+            user-select:none;
+        }
+        ul,li{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .container{
+            width: 540px;
+            height: 400px;
+            padding: 50px 20px;
+            background-color: #fff;
+            border-radius: 2px;
+            margin: 0 auto;
+            margin-top: 10%;
+        }
+        .container ul{
+            width: 40%;
+            height: 100%;
+            background-color: #fafafa;
+            border: 1px solid #e5e5e5;
+            float: left;
+        }
+        .container .data-list li{
+            width: 100%;
+            height: 36px;
+            line-height: 36px;
+            text-indent: 10px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .container .data-list li:hover{
+            background-color: #039ae3;
+            color: #fff;
+        }
+        .container .data-list li.selected{
+            background-color: #666;
+            color: #fff;
+        }
+        .container .data-list li.moving{
+            position: absolute;
+            width: auto;
+            padding-right: 15px;
+            top:0;
+            left: 0;
+        }
+        .toolbar{
+            margin-top: 25%;
+            width: 18%;
+            float: left;
+        }
+        .toolbar .button{
+            width: 80px;
+            height: 36px;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #d9d9d9;
+            text-align: center;
+            line-height: 36px;
+            text-decoration: none;
+            color: #333;
+            background: #f3f3f3;
+            font-size: 14px;
+        }
+        .toolbar .button:hover{
+            background-color: #039ae3;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul id="left-list" class="data-list list-left">
+        <li>刘备</li>
+        <li>诸葛亮</li>
+        <li>关羽</li>
+        <li>张飞</li>
+    </ul>
+    <div class="toolbar">
+        <a id="add" class="button" href="#">添加</a>
+        <a id="del" class="button" href="#">删除</a>
+    </div>
+    <ul id="right-list" class="data-list list-right">
+        <li>孙权</li>
+        <li>甘宁</li>
+        <li>黄盖</li>
+    </ul>
+</div>
+<script>
+    window.onload=function () {
+        var leftList=document.getElementById("left-list")
+        var rightList=document.getElementById("right-list")
+        var movingItem;  //移动的列表
+        //列表点击事件
+        var itemClick=function (event) {
+            event.target.className=event.target.className?"":"selected"
+        }
+        //左右俩个列表绑定onmouseup事件
+        leftList.onmouseup = rightList.onmouseup = function(event){
+            if(event.target.tagName==="UL"&&movingItem){
+                event.target.appendChild(movingItem);
+                movingItem = null;
+            }
+        }
+
+
+        //给它们绑定click事件
+        for(var i=0;i<leftList.children.length;i++){
+            leftList.children[i].onclick=itemClick
+            leftList.children[i].ondblclick=function (event) {
+                var target=event.target
+                movingItem = target;
+                target.className = "selected moving";
+                target.style.left=(event.clientX+10)+"px"
+                target.style.top=(event.clientY+10)+"px"
+                document.onmousemove=function (event) {
+                    target.style.left=(event.clientX+10)+"px"
+                    target.style.top=(event.clientY+10)+"px"
+                }
+                document.onmouseup=function (event) {
+                    if(event.target.nodeName==="UL"){
+                        target.className=""
+                        document.onmousemove = null;
+                        movingItem = null;
+                    }
+                }
+            }
+
+        }
+        for(var i=0;i<rightList.children.length;i++){
+            rightList.children[i].onclick=itemClick
+            rightList.children[i].ondblclick=function (event) {
+                var target=event.target
+                movingItem = target;
+                target.className = "selected moving";
+                target.style.left=(event.clientX+10)+"px"
+                target.style.top=(event.clientY+10)+"px"
+                document.onmousemove=function (event) {
+                    target.style.left=(event.clientX+10)+"px"
+                    target.style.top=(event.clientY+10)+"px"
+                }
+                document.onmouseup=function (event) {
+                    if(event.target.nodeName==="UL"){
+                        target.className=""
+                        document.onmousemove = null;
+                        movingItem = null;
+                    }
+                }
+            }
+        }
+        document.getElementById("add").onclick= document.getElementById("del").onclick=function (event) {
+            //用来保存选择的列表
+            //选择以后，把列表保存到arr里面
+            //使用的原因是多选的时候直接移动，ULde Length会改变
+            var arr=[]
+            var target=event.target.id==="add" ? leftList : rightList
+            var target2=target===leftList ? rightList : leftList
+            for(var i=0;i<target.children.length;i++){
+                if(target.children[i].className){
+                    arr.push(target.children[i])
+                    target.children[i].className=""
+                }
+            }
+            for(var i=0;i<arr.length;i++){
+                target2.appendChild(arr[i])
+            }
+        }
+
+    }
+</script>
+</body>
+</html>
